@@ -1,0 +1,29 @@
+---
+import { getCollection } from 'astro:content';
+
+// GetStaticPaths function to tell Astro which pages to generate
+export async function getStaticPaths() {
+  // Get all posts from the collection
+  const posts = await getCollection('posts');
+  
+  return posts.map(post => ({
+    params: { slug: post.slug }
+  }));
+}
+
+// Get the content for the current post
+const { slug } = Astro.params;
+const post = await getCollection('posts').then((posts) =>
+  posts.find((p) => p.slug === slug)
+);
+---
+
+<html>
+  <body>
+    <h1>{post.data.title}</h1>
+    <article>
+      <p>{post.data.date}</p>
+      <div>{post.body}</div>
+    </article>
+  </body>
+</html>
